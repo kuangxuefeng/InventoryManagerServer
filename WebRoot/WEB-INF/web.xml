@@ -17,4 +17,13 @@
 		<servlet-name>UserServlet</servlet-name>
 		<url-pattern>/servlet/UserServlet</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>CommodityServlet</servlet-name>
+		<servlet-class>com.kxf.ims.servlet.CommodityServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>CommodityServlet</servlet-name>
+		<url-pattern>/servlet/CommodityServlet</url-pattern>
+	</servlet-mapping>
 </web-app>

@@ -1,9 +1,7 @@
 package com.kxf.ims.servlet;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,12 +15,12 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.kxf.ims.db.MyDBManage;
+import com.kxf.ims.entity.Commodity;
 import com.kxf.ims.entity.HttpEntity;
-import com.kxf.ims.entity.User;
 import com.kxf.ims.utils.StringUtils;
 import com.kxf.mysqlmanage.DBWhereBuilder;
 
-public class UserServlet extends HttpServlet {
+public class CommodityServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -43,9 +41,9 @@ public class UserServlet extends HttpServlet {
 		reader.close();
 		log("reStr=" + reStr);
 		Gson gson = new Gson();
-		Type typeOfT = new TypeToken<HttpEntity<User>>() {
+		Type typeOfT = new TypeToken<HttpEntity<Commodity>>() {
 		}.getType();
-		HttpEntity<User> he = gson.fromJson(reStr, typeOfT);
+		HttpEntity<Commodity> he = gson.fromJson(reStr, typeOfT);
 		log("he=" + he);
 
 		if (null == he) {
@@ -53,50 +51,37 @@ public class UserServlet extends HttpServlet {
 			he.setResponseMsg("参数错误");
 		} else {
 			MyDBManage db = new MyDBManage();
-			if ("1000".equals(he.getRequestCode())) {// 查询单个
-				User[] us = he.getTs();
-				if (null == us || us.length != 1
-						|| StringUtils.isEmpty(us[0].getName())) {
+			if ("1000".equals(he.getRequestCode())) {// 查询单个，按二维码查询
+				Commodity[] com = he.getTs();
+				if (null == com || com.length != 1
+						|| StringUtils.isEmpty(com[0].getQcode())) {
 					he.setResponseCode("-9999");
 					he.setResponseMsg("参数错误");
 				} else {
-					DBWhereBuilder dbw = new DBWhereBuilder("name", "=",
-							us[0].getName());
-					List<User> ls = db.find(User.class, dbw);
+					DBWhereBuilder dbw = new DBWhereBuilder("qcode", "=",
+							com[0].getQcode());
+					List<Commodity> ls = db.find(Commodity.class, dbw);
 					if (null == ls || ls.size() < 1) {
-						if ("root".equals(us[0].getName())) {// "root".equals(us[0].getName())
-							User user = new User();
-							user.setName("root");
-							user.setPw("qazwsx");
-							user.setPermissions(2);
-							db.save(user);
-							ls = new ArrayList<User>();
-							ls.add(user);
-							he.setResponseCode("0000");
-							he.setResponseMsg("成功");
-							he.setTs(ls.toArray(new User[0]));
-						} else {
-							he.setResponseCode("-9997");
-							he.setResponseMsg("未查到");
-						}
+						he.setResponseCode("-9997");
+						he.setResponseMsg("未查到");
 					} else {
 						he.setResponseCode("0000");
 						he.setResponseMsg("成功");
-						he.setTs(ls.toArray(new User[0]));
+						he.setTs(ls.toArray(new Commodity[0]));
 					}
 				}
 			} else if ("1001".equals(he.getRequestCode())) {//添加
-				User[] us = he.getTs();
-				if (null == us || us.length != 1
-						|| StringUtils.isEmpty(us[0].getName())) {
+				Commodity[] com = he.getTs();
+				if (null == com || com.length != 1
+						|| StringUtils.isEmpty(com[0].getQcode())) {
 					he.setResponseCode("-9999");
 					he.setResponseMsg("参数错误");
 				} else {
-					DBWhereBuilder dbw = new DBWhereBuilder("name", "=",
-							us[0].getName());
-					List<User> ls = db.find(User.class, dbw);
+					DBWhereBuilder dbw = new DBWhereBuilder("qcode", "=",
+							com[0].getQcode());
+					List<Commodity> ls = db.find(Commodity.class, dbw);
 					if (null == ls || ls.size() < 1) {
-						int i = db.save(us[0]);
+						int i = db.save(com[0]);
 						if (1 == i) {
 							he.setResponseCode("0000");
 							he.setResponseMsg("成功");
@@ -107,22 +92,22 @@ public class UserServlet extends HttpServlet {
 					} else {
 						he.setResponseCode("-9996");
 						he.setResponseMsg("用户已存在");
-						he.setTs(ls.toArray(new User[0]));
+						he.setTs(ls.toArray(new Commodity[0]));
 					}
 				}
-			} else if ("1002".equals(he.getRequestCode())) {//查询多个
-				User[] us = he.getTs();
-				if (null == us || us.length != 1
-						|| StringUtils.isEmpty(us[0].getPermissions() + "")) {
+			} else if ("1002".equals(he.getRequestCode())) {//查询多个,按照userId查询
+				Commodity[] com = he.getTs();
+				if (null == com || com.length != 1
+						|| StringUtils.isEmpty(com[0].getUserId() + "")) {
 					he.setResponseCode("-9999");
 					he.setResponseMsg("参数错误");
 				} else {
-					DBWhereBuilder dbw = new DBWhereBuilder("permissions", "<=",
-							us[0].getPermissions());
-					List<User> ls = db.find(User.class, dbw);
+					DBWhereBuilder dbw = new DBWhereBuilder("userId", "=",
+							com[0].getUserId());
+					List<Commodity> ls = db.find(Commodity.class, dbw);
 					he.setResponseCode("0000");
 					he.setResponseMsg("成功");
-					he.setTs(ls.toArray(new User[0]));
+					he.setTs(ls.toArray(new Commodity[0]));
 				}
 			} else {
 				he.setResponseCode("-9998");
