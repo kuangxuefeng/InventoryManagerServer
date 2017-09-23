@@ -6,9 +6,37 @@ import java.util.Properties;
 
 import com.kxf.mysqlmanage.BaseDBManage;
 import com.kxf.mysqlmanage.LogUtils;
+import com.kxf.mysqlmanage.LogUtils.LogListener;
+import com.kxf.mysqlmanage.LogUtils.LogType;
 
 public class MyDBManage extends BaseDBManage {
 
+	static{
+		LogUtils.setLogType(LogType.DEBUG);
+		LogUtils.setListener(new LogListener() {
+			
+			@Override
+			public void i(String i) {
+				System.out.println(i);
+			}
+			
+			@Override
+			public void e(String e) {
+				System.err.println(e);
+			}
+
+			@Override
+			public void d(String d) {
+				System.out.println(d);
+			}
+
+			@Override
+			public void w(String w) {
+				System.err.println(w);
+			}
+		});
+	}
+	
 	@Override
 	public Connection openConnection() {
 		Properties prop = new Properties();
