@@ -87,11 +87,11 @@ public class CommodityServlet extends HttpServlet {
 							he.setResponseMsg("成功");
 						} else {
 							he.setResponseCode("-9995");
-							he.setResponseMsg("用户添加失败");
+							he.setResponseMsg("添加失败");
 						}
 					} else {
 						he.setResponseCode("-9996");
-						he.setResponseMsg("用户已存在");
+						he.setResponseMsg("已存在");
 						he.setTs(ls.toArray(new Commodity[0]));
 					}
 				}
@@ -108,6 +108,33 @@ public class CommodityServlet extends HttpServlet {
 					he.setResponseCode("0000");
 					he.setResponseMsg("成功");
 					he.setTs(ls.toArray(new Commodity[0]));
+				}
+			} else if ("1003".equals(he.getRequestCode())) {//通过name修改状态
+				Commodity[] com = he.getTs();
+				if (null == com || com.length != 1
+						|| StringUtils.isEmpty(com[0].getName())) {
+					he.setResponseCode("-9999");
+					he.setResponseMsg("参数错误");
+				} else {
+					DBWhereBuilder dbw = new DBWhereBuilder("name", "=",
+							com[0].getName());
+					List<Commodity> ls = db.find(Commodity.class, dbw);
+					if (null == ls || ls.size()<1) {
+						he.setResponseCode("-9994");
+						he.setResponseMsg("要修改的数据未找到");
+					}else {
+						Commodity commodity = ls.get(0);
+						commodity.setState(com[0].getState());
+						int i = db.update(commodity, dbw);
+						if (1 == i) {
+							he.setResponseCode("0000");
+							he.setResponseMsg("成功");
+						}else {
+							he.setResponseCode("-9993");
+							he.setResponseMsg("修改失败");
+						}
+					}
+					
 				}
 			} else {
 				he.setResponseCode("-9998");

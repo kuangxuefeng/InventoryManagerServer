@@ -124,6 +124,42 @@ public class UserServlet extends HttpServlet {
 					he.setResponseMsg("成功");
 					he.setTs(ls.toArray(new User[0]));
 				}
+			} else if ("1003".equals(he.getRequestCode())) {//修改信息
+				User[] us = he.getTs();
+				if (null == us || us.length != 1
+						|| StringUtils.isEmpty(us[0].getId() + "")) {
+					he.setResponseCode("-9999");
+					he.setResponseMsg("参数错误");
+				} else {
+					DBWhereBuilder dbw = new DBWhereBuilder("id", "=",
+							us[0].getId());
+					int i = db.update(us[0], dbw);
+					if (i!=1) {
+						he.setResponseCode("-9994");
+						he.setResponseMsg("用户修改失败");
+					}else {
+						he.setResponseCode("0000");
+						he.setResponseMsg("成功");
+					}
+				}
+			} else if ("1004".equals(he.getRequestCode())) {//删除信息
+				User[] us = he.getTs();
+				if (null == us || us.length != 1
+						|| StringUtils.isEmpty(us[0].getId() + "")) {
+					he.setResponseCode("-9999");
+					he.setResponseMsg("参数错误");
+				} else {
+					DBWhereBuilder dbw = new DBWhereBuilder("id", "=",
+							us[0].getId());
+					int i = db.delete(User.class, dbw);
+					if (i!=1) {
+						he.setResponseCode("-9993");
+						he.setResponseMsg("用户删除失败");
+					}else {
+						he.setResponseCode("0000");
+						he.setResponseMsg("成功");
+					}
+				}
 			} else {
 				he.setResponseCode("-9998");
 				he.setResponseMsg("请求码不支持");
