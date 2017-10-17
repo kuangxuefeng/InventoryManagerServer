@@ -109,15 +109,15 @@ public class CommodityServlet extends HttpServlet {
 					he.setResponseMsg("成功");
 					he.setTs(ls.toArray(new Commodity[0]));
 				}
-			} else if ("1003".equals(he.getRequestCode())) {//通过name修改状态
+			} else if ("1003".equals(he.getRequestCode())) {//通过qcode修改状态
 				Commodity[] com = he.getTs();
 				if (null == com || com.length != 1
-						|| StringUtils.isEmpty(com[0].getName())) {
+						|| StringUtils.isEmpty(com[0].getQcode())) {
 					he.setResponseCode("-9999");
 					he.setResponseMsg("参数错误");
 				} else {
-					DBWhereBuilder dbw = new DBWhereBuilder("name", "=",
-							com[0].getName());
+					DBWhereBuilder dbw = new DBWhereBuilder("qcode", "=",
+							com[0].getQcode());
 					List<Commodity> ls = db.find(Commodity.class, dbw);
 					if (null == ls || ls.size()<1) {
 						he.setResponseCode("-9994");
