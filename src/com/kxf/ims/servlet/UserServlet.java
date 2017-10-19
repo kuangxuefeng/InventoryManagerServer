@@ -19,8 +19,11 @@ import com.google.gson.reflect.TypeToken;
 import com.kxf.ims.db.MyDBManage;
 import com.kxf.ims.entity.HttpEntity;
 import com.kxf.ims.entity.User;
+import com.kxf.ims.utils.EncUtil;
 import com.kxf.ims.utils.StringUtils;
+import com.kxf.ims.utils.ZipUtils;
 import com.kxf.mysqlmanage.DBWhereBuilder;
+import com.kxf.mysqlmanage.LogUtils.LogListener;
 
 public class UserServlet extends HttpServlet {
 	@Override
@@ -33,7 +36,7 @@ public class UserServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		// super.doPost(req, resp);
-		resp.setContentType("application/json");
+		resp.setContentType("text/plain; charset=utf-8");
 		BufferedReader reader = req.getReader();
 		String reStr = "";
 		String line = "";
@@ -42,6 +45,8 @@ public class UserServlet extends HttpServlet {
 		}
 		reader.close();
 		log("reStr=" + reStr);
+		reStr = EncUtil.desEncryptAsString(null, reStr);
+		log("解密后  reStr=" + reStr);
 		Gson gson = new Gson();
 		Type typeOfT = new TypeToken<HttpEntity<User>>() {
 		}.getType();
@@ -52,7 +57,38 @@ public class UserServlet extends HttpServlet {
 			he.setResponseCode("-9999");
 			he.setResponseMsg("参数错误");
 		} else {
-			MyDBManage db = new MyDBManage();
+			MyDBManage db = new MyDBManage(){
+
+				@Override
+				public LogListener getListener() {
+					// TODO Auto-generated method stub
+					return new LogListener() {
+						
+						@Override
+						public void w(String s) {
+							log("LogListener w s=" + s);
+							
+						}
+						
+						@Override
+						public void i(String s) {
+							log("LogListener i s=" + s);
+							
+						}
+						
+						@Override
+						public void e(String s) {
+							log("LogListener e s=" + s);
+							
+						}
+						
+						@Override
+						public void d(String s) {
+							log("LogListener d s=" + s);
+							
+						}
+					};
+				}};
 			if ("1000".equals(he.getRequestCode())) {// 查询单个
 				User[] us = he.getTs();
 				if (null == us || us.length != 1
@@ -169,6 +205,8 @@ public class UserServlet extends HttpServlet {
 		log("he=" + he);
 		String respStr = gson.toJson(he);
 		log("respStr=" + respStr);
+		respStr = EncUtil.encryptAsString(null, respStr);
+		log("加密后  respStr=" + respStr);
 		// PrintWriter bw = resp.getWriter();
 		// bw.write(respStr);
 		// bw.flush();

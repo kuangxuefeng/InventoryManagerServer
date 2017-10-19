@@ -9,33 +9,7 @@ import com.kxf.mysqlmanage.LogUtils;
 import com.kxf.mysqlmanage.LogUtils.LogListener;
 import com.kxf.mysqlmanage.LogUtils.LogType;
 
-public class MyDBManage extends BaseDBManage {
-
-	static{
-		LogUtils.setLogType(LogType.DEBUG);
-		LogUtils.setListener(new LogListener() {
-			
-			@Override
-			public void i(String i) {
-				System.out.println(i);
-			}
-			
-			@Override
-			public void e(String e) {
-				System.err.println(e);
-			}
-
-			@Override
-			public void d(String d) {
-				System.out.println(d);
-			}
-
-			@Override
-			public void w(String w) {
-				System.err.println(w);
-			}
-		});
-	}
+public abstract class MyDBManage extends BaseDBManage {
 	
 	@Override
 	public Connection openConnection() {
@@ -44,6 +18,8 @@ public class MyDBManage extends BaseDBManage {
 		String url = null;
 		String username = null;
 		String password = null;
+		LogUtils.setLogType(LogType.DEBUG);
+		LogUtils.setListener(getListener());
 		try {
 			prop.load(this.getClass().getClassLoader()
 					.getResourceAsStream("DBConfig.properties"));
@@ -58,5 +34,7 @@ public class MyDBManage extends BaseDBManage {
 		}
 		return null;
 	}
+
+	public abstract LogListener getListener();
 
 }
