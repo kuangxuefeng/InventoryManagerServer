@@ -17,6 +17,7 @@ import com.google.gson.reflect.TypeToken;
 import com.kxf.ims.db.MyDBManage;
 import com.kxf.ims.entity.Commodity;
 import com.kxf.ims.entity.HttpEntity;
+import com.kxf.ims.entity.User;
 import com.kxf.ims.utils.EncUtil;
 import com.kxf.ims.utils.StringUtils;
 import com.kxf.ims.utils.ZipUtils;
@@ -172,6 +173,41 @@ public class CommodityServlet extends HttpServlet {
 					}
 					
 				}
+			} else if ("1004".equals(he.getRequestCode())) {//查询多个,按照权限查询
+				Commodity[] com = he.getTs();
+				if (null == com || com.length != 1
+						|| StringUtils.isEmpty(com[0].getUserId() + "")) {
+					he.setResponseCode("-9999");
+					he.setResponseMsg("参数错误");
+				} else {
+					DBWhereBuilder dbw = new DBWhereBuilder("userId", "=",
+							com[0].getUserId());
+					List<Commodity> ls = db.find(Commodity.class, dbw);
+					he.setResponseCode("0000");
+					he.setResponseMsg("成功");
+					DBWhereBuilder dbw1 = new DBWhereBuilder("id", "=",
+							com[0].getUserId());
+					List<User> us = db.find(User.class, dbw1);
+					if (null != us && us.size()>0) {
+						DBWhereBuilder dbw2 = new DBWhereBuilder("permissions", "<",
+								us.get(0).getPermissions());
+						List<User> usLow = db.find(User.class, dbw2);
+						if (null != usLow && usLow.size()>0) {
+							for (User user : usLow) {
+								DBWhereBuilder dbw4 = new DBWhereBuilder("userId", "=",
+										user.getId());
+								List<Commodity> ls4 = db.find(Commodity.class, dbw4);
+								if (null != ls4 && ls4.size()>0) {
+									ls.addAll(ls4);
+								}
+							}
+						}
+					}
+					he.setTs(ls.toArray(new Commodity[0]));
+				}
+			} else if ("1005".equals(he.getRequestCode())) {//查询全部
+				List<Commodity> ls = db.findAll(Commodity.class);
+				he.setTs(ls.toArray(new Commodity[0]));
 			} else {
 				he.setResponseCode("-9998");
 				he.setResponseMsg("请求码不支持");
