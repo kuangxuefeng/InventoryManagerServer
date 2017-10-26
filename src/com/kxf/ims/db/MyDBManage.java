@@ -18,8 +18,8 @@ public abstract class MyDBManage extends BaseDBManage {
 		String url = null;
 		String username = null;
 		String password = null;
-		LogUtils.setLogType(LogType.DEBUG);
-		LogUtils.setListener(getListener());
+		LogUtils lu = new LogUtils(getListener(), LogType.DEBUG);
+		setLogUtils(lu);
 		try {
 			prop.load(this.getClass().getClassLoader()
 					.getResourceAsStream("DBConfig.properties"));
@@ -30,7 +30,7 @@ public abstract class MyDBManage extends BaseDBManage {
 			Class.forName(driver);
 			return DriverManager.getConnection(url, username, password);
 		} catch (Exception e) {
-			LogUtils.e(e.toString());
+			lu.e("openConnection", e);
 		}
 		return null;
 	}

@@ -3,6 +3,7 @@ package com.kxf.ims.servlet;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,7 @@ import com.kxf.ims.utils.StringUtils;
 import com.kxf.ims.utils.ZipUtils;
 import com.kxf.mysqlmanage.DBWhereBuilder;
 import com.kxf.mysqlmanage.LogUtils.LogListener;
+import com.kxf.mysqlmanage.MySqlManagerException;
 
 public class CommodityServlet extends HttpServlet {
 	@Override
@@ -97,7 +99,16 @@ public class CommodityServlet extends HttpServlet {
 				} else {
 					DBWhereBuilder dbw = new DBWhereBuilder("qcode", "=",
 							com[0].getQcode());
-					List<Commodity> ls = db.find(Commodity.class, dbw);
+					List<Commodity> ls = null;
+					try {
+						ls = db.find(Commodity.class, dbw);
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (MySqlManagerException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					if (null == ls || ls.size() < 1) {
 						he.setResponseCode("-9997");
 						he.setResponseMsg("未查到");
@@ -116,9 +127,27 @@ public class CommodityServlet extends HttpServlet {
 				} else {
 					DBWhereBuilder dbw = new DBWhereBuilder("qcode", "=",
 							com[0].getQcode());
-					List<Commodity> ls = db.find(Commodity.class, dbw);
+					List<Commodity> ls = null;
+					try {
+						ls = db.find(Commodity.class, dbw);
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (MySqlManagerException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					if (null == ls || ls.size() < 1) {
-						int i = db.save(com[0]);
+						int i = -1;
+						try {
+							i = db.save(com[0]);
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (MySqlManagerException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 						if (1 == i) {
 							he.setResponseCode("0000");
 							he.setResponseMsg("成功");
@@ -141,7 +170,16 @@ public class CommodityServlet extends HttpServlet {
 				} else {
 					DBWhereBuilder dbw = new DBWhereBuilder("userId", "=",
 							com[0].getUserId());
-					List<Commodity> ls = db.find(Commodity.class, dbw);
+					List<Commodity> ls = null;
+					try {
+						ls = db.find(Commodity.class, dbw);
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (MySqlManagerException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					he.setResponseCode("0000");
 					he.setResponseMsg("成功");
 					he.setTs(ls.toArray(new Commodity[0]));
@@ -155,14 +193,30 @@ public class CommodityServlet extends HttpServlet {
 				} else {
 					DBWhereBuilder dbw = new DBWhereBuilder("qcode", "=",
 							com[0].getQcode());
-					List<Commodity> ls = db.find(Commodity.class, dbw);
+					List<Commodity> ls = null;
+					try {
+						ls = db.find(Commodity.class, dbw);
+					} catch (SQLException e) {
+						e.printStackTrace();
+					} catch (MySqlManagerException e) {
+						e.printStackTrace();
+					}
 					if (null == ls || ls.size()<1) {
 						he.setResponseCode("-9994");
 						he.setResponseMsg("要修改的数据未找到");
 					}else {
 						Commodity commodity = ls.get(0);
 						commodity.setState(com[0].getState());
-						int i = db.update(commodity, dbw);
+						int i = -1;
+						try {
+							i = db.update(commodity, dbw);
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (MySqlManagerException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 						if (1 == i) {
 							he.setResponseCode("0000");
 							he.setResponseMsg("成功");
@@ -182,21 +236,57 @@ public class CommodityServlet extends HttpServlet {
 				} else {
 					DBWhereBuilder dbw = new DBWhereBuilder("userId", "=",
 							com[0].getUserId());
-					List<Commodity> ls = db.find(Commodity.class, dbw);
+					List<Commodity> ls = null;
+					try {
+						ls = db.find(Commodity.class, dbw);
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (MySqlManagerException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					he.setResponseCode("0000");
 					he.setResponseMsg("成功");
 					DBWhereBuilder dbw1 = new DBWhereBuilder("id", "=",
 							com[0].getUserId());
-					List<User> us = db.find(User.class, dbw1);
+					List<User> us = null;
+					try {
+						us = db.find(User.class, dbw1);
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (MySqlManagerException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					if (null != us && us.size()>0) {
 						DBWhereBuilder dbw2 = new DBWhereBuilder("permissions", "<",
 								us.get(0).getPermissions());
-						List<User> usLow = db.find(User.class, dbw2);
+						List<User> usLow = null;
+						try {
+							usLow = db.find(User.class, dbw2);
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (MySqlManagerException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 						if (null != usLow && usLow.size()>0) {
 							for (User user : usLow) {
 								DBWhereBuilder dbw4 = new DBWhereBuilder("userId", "=",
 										user.getId());
-								List<Commodity> ls4 = db.find(Commodity.class, dbw4);
+								List<Commodity> ls4 = null;
+								try {
+									ls4 = db.find(Commodity.class, dbw4);
+								} catch (SQLException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								} catch (MySqlManagerException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
 								if (null != ls4 && ls4.size()>0) {
 									ls.addAll(ls4);
 								}
@@ -206,7 +296,16 @@ public class CommodityServlet extends HttpServlet {
 					he.setTs(ls.toArray(new Commodity[0]));
 				}
 			} else if ("1005".equals(he.getRequestCode())) {//查询全部
-				List<Commodity> ls = db.findAll(Commodity.class);
+				List<Commodity> ls = null;
+				try {
+					ls = db.findAll(Commodity.class);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (MySqlManagerException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				he.setTs(ls.toArray(new Commodity[0]));
 			} else {
 				he.setResponseCode("-9998");

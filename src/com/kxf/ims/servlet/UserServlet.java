@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Type;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +25,7 @@ import com.kxf.ims.utils.StringUtils;
 import com.kxf.ims.utils.ZipUtils;
 import com.kxf.mysqlmanage.DBWhereBuilder;
 import com.kxf.mysqlmanage.LogUtils.LogListener;
+import com.kxf.mysqlmanage.MySqlManagerException;
 
 public class UserServlet extends HttpServlet {
 	@Override
@@ -98,14 +100,31 @@ public class UserServlet extends HttpServlet {
 				} else {
 					DBWhereBuilder dbw = new DBWhereBuilder("name", "=",
 							us[0].getName());
-					List<User> ls = db.find(User.class, dbw);
+					List<User> ls = null;
+					try {
+						ls = db.find(User.class, dbw);
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (MySqlManagerException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					if (null == ls || ls.size() < 1) {
 						if ("root".equals(us[0].getName())) {// "root".equals(us[0].getName())
 							User user = new User();
 							user.setName("root");
 							user.setPw("qazwsx");
 							user.setPermissions(2);
-							db.save(user);
+							try {
+								db.save(user);
+							} catch (SQLException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} catch (MySqlManagerException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 							ls = new ArrayList<User>();
 							ls.add(user);
 							he.setResponseCode("0000");
@@ -130,9 +149,27 @@ public class UserServlet extends HttpServlet {
 				} else {
 					DBWhereBuilder dbw = new DBWhereBuilder("name", "=",
 							us[0].getName());
-					List<User> ls = db.find(User.class, dbw);
+					List<User> ls = null;
+					try {
+						ls = db.find(User.class, dbw);
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (MySqlManagerException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					if (null == ls || ls.size() < 1) {
-						int i = db.save(us[0]);
+						int i = -1;
+						try {
+							i = db.save(us[0]);
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (MySqlManagerException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 						if (1 == i) {
 							he.setResponseCode("0000");
 							he.setResponseMsg("成功");
@@ -155,7 +192,16 @@ public class UserServlet extends HttpServlet {
 				} else {
 					DBWhereBuilder dbw = new DBWhereBuilder("permissions", "<=",
 							us[0].getPermissions());
-					List<User> ls = db.find(User.class, dbw);
+					List<User> ls = null;
+					try {
+						ls = db.find(User.class, dbw);
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (MySqlManagerException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					he.setResponseCode("0000");
 					he.setResponseMsg("成功");
 					he.setTs(ls.toArray(new User[0]));
@@ -169,7 +215,16 @@ public class UserServlet extends HttpServlet {
 				} else {
 					DBWhereBuilder dbw = new DBWhereBuilder("id", "=",
 							us[0].getId());
-					int i = db.update(us[0], dbw);
+					int i = -1;
+					try {
+						i = db.update(us[0], dbw);
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (MySqlManagerException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					if (i!=1) {
 						he.setResponseCode("-9994");
 						he.setResponseMsg("用户修改失败");
@@ -187,7 +242,16 @@ public class UserServlet extends HttpServlet {
 				} else {
 					DBWhereBuilder dbw = new DBWhereBuilder("id", "=",
 							us[0].getId());
-					int i = db.delete(User.class, dbw);
+					int i = -1;
+					try {
+						i = db.delete(User.class, dbw);
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (MySqlManagerException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					if (i!=1) {
 						he.setResponseCode("-9993");
 						he.setResponseMsg("用户删除失败");
