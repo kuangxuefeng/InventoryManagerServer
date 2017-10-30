@@ -10,6 +10,7 @@ import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.FileHeader;
 import net.lingala.zip4j.model.ZipParameters;
+import net.lingala.zip4j.progress.ProgressMonitor;
 import net.lingala.zip4j.util.Zip4jConstants;
 
 /**
@@ -142,6 +143,7 @@ public class CompressUtil {
 		}
 		try {
 			ZipFile zipFile = new ZipFile(dest);
+			zipFile.setRunInThread(true);
 			if (srcFile.isDirectory()) {
 				// 如果不创建目录的话,将直接把给定目录下的文件压缩到压缩文件,即没有目录结构
 				if (!isCreateDir) {
@@ -155,6 +157,27 @@ public class CompressUtil {
 			} else {
 				zipFile.addFile(srcFile, parameters);
 			}
+			final ProgressMonitor progressMonitor = zipFile.getProgressMonitor();
+			new Thread(new Runnable() {
+				
+				@Override
+				public void run() {
+					while (true) {
+						int percentDone = progressMonitor.getPercentDone();
+						System.out.println("压缩进度：percentDone=" + percentDone);
+						System.out.println("压缩进度：progressMonitor.getResult()=" + progressMonitor.getResult());
+						if (progressMonitor.getResult() == 0 || percentDone >= 100) {
+							System.out.println("压缩成功！");
+							break;
+						}
+						try {
+							Thread.sleep(100);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}).start();
 			return dest;
 		} catch (ZipException e) {
 			e.printStackTrace();
@@ -209,13 +232,13 @@ public class CompressUtil {
 	}
 
 	public static void main(String[] args) {
-		zip("d:\\Log\\7", "d:\\test\\9.zip", "11");
-		try {
-			unzip("d:\\test\\9.zip", "11");
-		} catch (ZipException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		zip("d:\\Log\\7", "d:\\Log\\9.zip", "11");
+//		try {
+//			unzip("d:\\test\\9.zip", "11");
+//		} catch (ZipException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		System.out.println("success");
 //		try {
 //			File[] files = unzip("d:\\test\\汉字.zip", "aa");
