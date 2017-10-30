@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="2.5" 
-	xmlns="http://java.sun.com/xml/ns/javaee" 
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
 	http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
-  <display-name></display-name>	
-  <welcome-file-list>
-    <welcome-file>index.jsp</welcome-file>
-  </welcome-file-list>
-  
-  <servlet>
+	<display-name></display-name>
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+
+	<servlet>
 		<servlet-name>UserServlet</servlet-name>
 		<servlet-class>com.kxf.ims.servlet.UserServlet</servlet-class>
 	</servlet>
@@ -17,7 +16,7 @@
 		<servlet-name>UserServlet</servlet-name>
 		<url-pattern>/servlet/UserServlet</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<servlet-name>CommodityServlet</servlet-name>
 		<servlet-class>com.kxf.ims.servlet.CommodityServlet</servlet-class>
@@ -26,13 +25,23 @@
 		<servlet-name>CommodityServlet</servlet-name>
 		<url-pattern>/servlet/CommodityServlet</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<servlet-name>TestServlet</servlet-name>
 		<servlet-class>com.kxf.ims.servlet.TestServlet</servlet-class>
 	</servlet>
+
 	<servlet-mapping>
 		<servlet-name>TestServlet</servlet-name>
 		<url-pattern>/servlet/TestServlet</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>FileServlet</servlet-name>
+		<servlet-class>com.kxf.ims.servlet.FileServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>FileServlet</servlet-name>
+		<url-pattern>/servlet/FileServlet</url-pattern>
 	</servlet-mapping>
 </web-app>

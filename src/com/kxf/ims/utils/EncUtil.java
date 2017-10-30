@@ -1,9 +1,12 @@
 package com.kxf.ims.utils;
 
+import java.io.IOException;
+
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
+
 
 /**
  * Created by kuangxf on 2017/7/31.
@@ -126,5 +129,41 @@ public class EncUtil {
      */
     public static String desEncryptAsString(String encrypt_key, String encrypt_value) {
         return desDecrypt(encrypt_key, parseBytes(encrypt_value));
+    }
+    
+    /**
+     * 先压缩再加密
+     *
+     * @param encrypt_value 被加密的字符串
+     * @param encrypt_key   加密的密钥
+     * @return
+     */
+    public static String encryptAsStringAfterZip(String encrypt_key, String encrypt_value) {
+    	String zip = null;
+    	try {
+			zip = ZipUtils.compressStr(encrypt_value);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        return dumpBytes(desEncrypt(encrypt_key, zip));
+    }
+
+    /**
+     * 先解密再解压缩
+     *
+     * @param encrypt_value 要解密的字符串
+     * @param encrypt_key   密钥
+     * @return
+     */
+    public static String desEncryptAsStringBeforeUnZip(String encrypt_key, String encrypt_value) {
+        String str = desDecrypt(encrypt_key, parseBytes(encrypt_value));
+        try {
+			return ZipUtils.unCompressStr(str);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        return null;
     }
 }

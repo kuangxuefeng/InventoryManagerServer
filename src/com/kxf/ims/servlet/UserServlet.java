@@ -40,6 +40,7 @@ public class UserServlet extends HttpServlet {
 		// super.doPost(req, resp);
 		resp.setContentType("text/plain; charset=utf-8");
 		BufferedReader reader = req.getReader();
+		log("请求者地址" + req.getRemoteAddr());
 		String reStr = "";
 		String line = "";
 		while (null != (line = reader.readLine())) {

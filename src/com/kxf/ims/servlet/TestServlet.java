@@ -32,10 +32,16 @@ public class TestServlet extends HttpServlet {
 			reStr += line;
 		}
 		reader.close();
-		log("reStr=" + reStr);
-		String unZip = EncUtil.desEncryptAsString(null, reStr);
+		String unZip = EncUtil.desEncryptAsStringBeforeUnZip(null, reStr);
 		log("unZip=" + unZip);
-		String respStr = reStr;
+//		long millis = (long) (Math.random()*1000*20);
+//		log("reStr=" + reStr + ";休眠时间：" + (millis/1000));
+//		try {
+//			Thread.sleep(millis);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+		String respStr = reStr;// + "休眠时间：" + (millis/1000);
 		log("respStr=" + respStr);
 		// PrintWriter bw = resp.getWriter();
 		// bw.write(respStr);
